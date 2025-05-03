@@ -1,0 +1,21 @@
+.App {
+  font-size: 15px;
+  align-items: center;
+}
+
+
+.App-header {
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+.Group{
+  padding:2px;
+}
+.InputLabel{
+  font-size: 19px;
+}
+
+
