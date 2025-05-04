@@ -3,11 +3,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { pageRoutes } from "./page";
 import { Link } from "react-router";
 import { useState } from "react";
+import {fetchRequest,HttpResponse} from '../../base';
 // navigation menu bar
 export default function Navbar(){
    const routes=pageRoutes.filter((url)=>url.show===true).sort((url)=>url.order);
    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
- 
+   const [displayAlert,setDisplayALert]=useState(false);
    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
      setAnchorElNav(event.currentTarget);
    };
@@ -15,6 +16,11 @@ export default function Navbar(){
    const handleCloseNavMenu = () => {
      setAnchorElNav(null);
    };
+
+   const resetHandle=async()=>{
+    const clearAll:HttpResponse=await fetchRequest('/fixture/delete-all','DELETE');
+    var t=clearAll.messageResponse;
+   }
 
    const renderMobileMenu=()=>{
     return <Menu id="menu-appbar"
@@ -34,7 +40,7 @@ export default function Navbar(){
     {
     routes.map((route,key)=>(
         <Link to={route.url}>
-        <MenuItem key={key}>
+        <MenuItem key={key} onClick={resetHandle}>
         <Typography sx={{ textAlign: 'center' }}>
         {route.name}
         </Typography>
@@ -42,6 +48,11 @@ export default function Navbar(){
         </Link>
     ))
     }
+    <MenuItem >
+        <Typography sx={{ textAlign: 'center' }}>
+        Reset
+        </Typography>
+        </MenuItem>
     </Menu>;
    }
     return (
@@ -76,6 +87,7 @@ export default function Navbar(){
               </Button>
               </Link>
             ))}
+          <Button sx={{ my: 2, color: 'white', display: 'block',fontWeight:'800' }} onClick={resetHandle}>Reset</Button>
           </Box>
         </Toolbar>
         </Container>

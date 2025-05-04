@@ -24,10 +24,11 @@ export default class FileInput extends Component<Props,State>{
         var file=event.files[0];
         var fileType='.'+file.type.split('/')[1];
         if(acceptance==fileType){
-            if(this.props.onChange){
-                this.props.onChange(file);
-            }
+        
         }else this.setState({showError:true});
+        if(this.props.onChange){
+            this.props.onChange(file);
+        }
     }
     render(){
         return(

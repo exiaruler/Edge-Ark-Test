@@ -41,6 +41,12 @@ export default class FormControl extends Component<Props,State>{
         if(prevProps.error!=this.props.error){
             this.setState({...this.state,alertVariant:'error',showAlert:true,alertMsg:this.props.error});
         }
+        debugger;
+        if(prevProps.disableSave!=this.props.disableSave&&typeof this.props.disableSave=='boolean'){
+            if(typeof this.props.disableSave=='boolean'){
+                this.setState({...this.state,disableSave:this.props.disableSave});
+            }
+        }
     }
     updateAlert=()=>{
         if(this.props.success){
