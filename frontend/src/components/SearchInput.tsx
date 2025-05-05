@@ -11,7 +11,8 @@ type Props={
     options?:Array<any>,
     compareKey:string,
     width?:number,
-    optionDisplay:any
+    optionDisplay?:any,
+    displayKey?:string
 }
 
 function sleep(duration: number): Promise<void> {
@@ -59,6 +60,8 @@ export default function SearchInput(props:Props){
       var print="";
       if(props.optionDisplay){
         print=props.optionDisplay(option);
+      }else if(props.displayKey){
+        print=option[props.displayKey];
       }
       return print
     }

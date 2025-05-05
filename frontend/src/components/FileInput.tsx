@@ -20,14 +20,16 @@ export default class FileInput extends Component<Props,State>{
     // validate file acceptance
     handleUpload(event:any){
         this.setState({showError:false});
+        var error=false;
         var acceptance=this.props.accept;
         var file=event.files[0];
         var fileType='.'+file.type.split('/')[1];
-        if(acceptance===fileType){
-        
-        }else this.setState({showError:true});
+        if(acceptance!==fileType){
+            error=true;
+            this.setState({showError:true});
+        }
         if(this.props.onChange){
-            this.props.onChange(file);
+            this.props.onChange(file,error);
         }
     }
     render(){

@@ -17,17 +17,14 @@ export default function Upload(){
         formData.append('file', file);
         const uploadFile:HttpResponse=await fetchRequest('/fixture/upload','POST',formData,true);
         if(uploadFile.success){
-            setUploadMsg({...uploadMsg,success:uploadFile.messageResponse});
-        }else setUploadMsg({...uploadMsg,error:uploadFile.messageResponse});
+            setUploadMsg({...uploadMsg,success:uploadFile.messageResponse,error:''});
+        }else setUploadMsg({...uploadMsg,error:uploadFile.messageResponse,success:''});
         
     }
-    const onChange=(file:File)=>{
-        debugger;
+    const onChange=(file:File,error:boolean)=>{
         setSavBtn(false);
-        setFile(null);
         setFile(file);
-        console.log(file);
-        if(fileInputComp.current?.state.showError)setSavBtn(true);
+        if(error)setSavBtn(true);
         
     }
     const errorClear=()=>{
@@ -39,7 +36,7 @@ export default function Upload(){
         <Box sx={{flexGrow:2}}>
         <Grid container rowSpacing={1}>
         <Grid size={{xs:2,md:4}}></Grid>
-        <Grid size={{xs:1,md:4}}>
+        <Grid size={{xs:7,md:4}}>
         <FormControl onSubmit={submitHandle} error={uploadMsg.error} success={uploadMsg.success} saveCaption="Upload" disableSave={enableSavBtn}>
         <FileInput ref={fileInputComp} label={"Fixture"} onChange={onChange} accept={".csv"} />
         </FormControl>

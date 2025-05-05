@@ -28,11 +28,6 @@ export default function Search(){
             setResultHis([]);
             resultsHisRef.current=[];
         }
-        // retrieve team from previous search
-        var pontRes=resultsHisRef.current.filter((rec)=>rec.team.toLowerCase().startsWith(value.toLowerCase()));
-        if(pontRes.length>0){
-            resultsIncome(JSON.stringify(pontRes));
-        }
         // search for team if it does not exist
         var msg:WSMessage={
             route: "/team/search",
@@ -92,7 +87,7 @@ export default function Search(){
             awayTeam=obj.awayTeam.team;
             date=new Date(obj.fixtureDateTime);
         }
-        return homeTeam+" VS "+awayTeam+" "+date;
+        return homeTeam+" VS "+awayTeam+" "+date+" ";
     }
 
     const retrieve=()=>{
@@ -102,7 +97,7 @@ export default function Search(){
         }
     }
     useEffect(() => {
-        retrieve();
+        //retrieve();
         // websocket connection
         ws.current = new WebSocket('ws://localhost:8000');
         ws.current.onopen = () => {
@@ -124,7 +119,7 @@ export default function Search(){
         <Grid size={'grow'}></Grid>
         <Grid size={{xs:9,md:3}}>
         <div className="Group">
-        <SearchInput compareKey={'fixtureMid'} label={'Search Team'} onChange={onChange} autoOnChange={selectFixture} options={passOptions()} optionDisplay={optionDisplayRender}/>
+        <SearchInput compareKey={'_id'} label={'Search Team'} onChange={onChange} autoOnChange={selectFixture} options={passOptions()} optionDisplay={optionDisplayRender}/>
         </div>
         {fixDisplay?
         <div className="Group">

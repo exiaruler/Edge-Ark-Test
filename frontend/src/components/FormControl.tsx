@@ -33,34 +33,28 @@ export default class FormControl extends Component<Props,State>{
     }
     submitHandle=(e: React.FormEvent)=>{
         e.preventDefault();
-        this.setState({...this.state,saveLoad:true});
+        this.setState({...this.state,saveLoad:true,showAlert:false,alertVariant:'success'});
         if(this.props.onSubmit){
             this.props.onSubmit();
         }
     }
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
-        if(prevProps.success!=this.props.success){
-            
+        // succcess
+        if(prevProps.success!==this.props.success){
             this.setState({...this.state,alertVariant:'success',showAlert:true,alertMsg:this.props.success,saveLoad:false});
         }
-        if(prevProps.error!=this.props.error){
+        // error 
+        if(prevProps.error!==this.props.error){
             this.setState({...this.state,alertVariant:'error',showAlert:true,alertMsg:this.props.error,saveLoad:false});
         }
-        if(prevProps.disableSave!=this.props.disableSave&&typeof this.props.disableSave=='boolean'){
-            debugger;
+        // disable save button
+        if(prevProps.disableSave!==this.props.disableSave&&typeof this.props.disableSave=='boolean'){
             if(typeof this.props.disableSave=='boolean'){
-                this.setState({...this.state,disableSave:this.props.disableSave});
+                this.setState({...this.state,disableSave:this.props.disableSave,showAlert:false});
             }
         }
     }
-    updateAlert=()=>{
-        if(this.props.success){
-            this.setState({...this.state,alertVariant:'success',showAlert:true,alertMsg:this.props.success});
-        }
-        if(this.props.error){
-            this.setState({...this.state,alertVariant:'error',showAlert:true,alertMsg:this.props.error});
-        }
-    }
+
     
     render(){
         return(
@@ -73,7 +67,7 @@ export default class FormControl extends Component<Props,State>{
             <div className='Group'>
             <Box sx={{width:'350px'}}>
             {this.state.showAlert?
-            <Alert hidden={this.state.showAlert} variant='filled' severity={this.state.alertVariant}>{this.state.alertMsg}</Alert>
+            <Alert  variant='filled' severity={this.state.alertVariant}>{this.state.alertMsg}</Alert>
             :null}
             </Box>
             </div>
