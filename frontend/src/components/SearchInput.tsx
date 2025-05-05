@@ -1,15 +1,17 @@
-import { useState,Fragment } from "react";
+import { useState,Fragment, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 type Props={
     label:string,
     onChange?:any,
+    autoOnChange?:any,
     readOnly?:boolean,
     value?:string,
     options?:Array<any>,
     compareKey:string,
-    width?:number
+    width?:number,
+    optionDisplay:any
 }
 
 function sleep(duration: number): Promise<void> {
@@ -19,10 +21,12 @@ function sleep(duration: number): Promise<void> {
       }, duration);
     });
 }
+
 export default function SearchInput(props:Props){
     const [open, setOpen] = useState(false);
-    const [options,setOptions]=useState([]);
+    const [options,setOptions]:any=useState([]);
     const [loading, setLoading] =useState(false);
+    const [optionSel,setOptionSel]=useState(null);
     var width=300;
     if(props.width){
         width=props.width;
@@ -36,11 +40,37 @@ export default function SearchInput(props:Props){
           setOptions([]);
         })();
       };
-    
-      const handleClose = () => {
+    const handleClose = () => {
         setOpen(false);
         setOptions([]);
-      };
+    };
+    const textonChange=(event:any)=>{
+      if(props.onChange){
+        props.onChange(event);
+      }
+    }
+    const autonChange=(event:any,value:any)=>{
+      setOptionSel(value);
+      if(props.autoOnChange){
+        props.autoOnChange(event,value);
+      }
+    }
+    const renderOptionDisplay=(option:any)=>{
+      var print="";
+      if(props.optionDisplay){
+        print=props.optionDisplay(option);
+      }
+      return print
+    }
+    const searchCompare=(option:any,value:any)=>{
+      return option[props.compareKey] === value[props.compareKey];
+    }
+    const loadOptions=()=>{
+      setOptions(props.options);
+    }
+    useEffect(() => {
+      loadOptions();
+    })
     return(
         <div className="Group">
          <Autocomplete
@@ -48,13 +78,15 @@ export default function SearchInput(props:Props){
             open={open}
             onOpen={handleOpen}
             onClose={handleClose}
-            isOptionEqualToValue={(option, value) => option[props.compareKey] === value[props.compareKey]}
-            getOptionLabel={(option) => option[props.compareKey]}
+            isOptionEqualToValue={(option, value) =>searchCompare(option,value)}
+            getOptionLabel={(option) => renderOptionDisplay(option)}
             options={options}
             loading={loading}
+            onChange={(event:any,newValue:any)=>autonChange(event,newValue)}
             renderInput={(params) => (
             <TextField
             {...params}
+            onChange={(event:any)=>textonChange(event)}
             label={props.label}
             slotProps={{
                 input: {

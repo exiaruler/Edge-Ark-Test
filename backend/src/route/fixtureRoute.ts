@@ -1,14 +1,13 @@
 import * as express from 'express';
 import multer from 'multer';
 import fs from 'fs';
-import { Response } from '../response/response-interface';
-const matchCont=require('../controller/fixture-controller');
+import { Response } from '../response/responseInterface';
+const matchCont=require('../controller/fixtureController');
 const upload = multer({ dest: 'uploads/' })
 const router:express.Router=express.Router();
 
 router.post('/upload',upload.single('file'),async (req: express.Request, resp: express.Response, next: express.NextFunction)=>{
     // validate file is a .csv
-    console.log(req.file);
     var file=req.file;
     var errorOut:Response={
         success: false,
@@ -47,12 +46,6 @@ router.delete('/delete-all',async (req: express.Request, resp: express.Response,
     resp.json(deleteResp);
 })
 function removeFile(file:string){
-    var error='';
-    try{
-
-    }catch(err){
-
-    }
     fs.unlink(file, (err) => {
         if (err) {
           console.error('Failed to delete file:', err);

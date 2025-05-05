@@ -22,10 +22,17 @@ async function findTeam(teamName:string){
     return rec;
 }
 async function findTeamSearch(teamName:string){
-
+    teamName=teamName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const findTeams=await team.find({team:{$regex: `^${teamName}`, $options: 'i'}}).populate({path:'fixtures',populate:{
+        path:'homeTeam',model:'Team'
+    }}).populate({path:'fixtures',populate:{
+        path:'awayTeam',model:'Team'
+    }}).exec();
+    return findTeams;
 }
 module.exports={
     findTeam,
+    findTeamSearch,
     addTeam,
     updateTeam,
     deleteAll

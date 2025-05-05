@@ -1,0 +1,21 @@
+{
+  "name": "edgeark-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "production-build": "npm run install-all && npm run build --prefix frontend && npm run build --prefix backend",
+    "production-start": "concurrently \"npm start --prefix backend\" \"npm run production-frontend-start\"",
+    "production-frontend-start": "cd frontend && serve -s build",
+    "install-all": "npm install && concurrently \"npm run install-backend\" \"npm run install-frontend\"",
+    "install-frontend": "npm install --prefix frontend",
+    "install-backend": "npm install --prefix backend",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "edgeark-test": "file:"
+  }
+}

@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { Alert, AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { pageRoutes } from "./page";
 import { Link } from "react-router";
@@ -9,6 +9,7 @@ export default function Navbar(){
    const routes=pageRoutes.filter((url)=>url.show===true).sort((url)=>url.order);
    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
    const [displayAlert,setDisplayALert]=useState(false);
+   const [displayErr,setDisplayErr]=useState("");
    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
      setAnchorElNav(event.currentTarget);
    };
@@ -18,8 +19,14 @@ export default function Navbar(){
    };
 
    const resetHandle=async()=>{
+    setDisplayALert(true);
     const clearAll:HttpResponse=await fetchRequest('/fixture/delete-all','DELETE');
-    var t=clearAll.messageResponse;
+    const msg=clearAll.messageResponse;
+    setDisplayErr(msg);
+    sessionStorage.removeItem("teamshis");
+    setTimeout(()=>{
+      setDisplayALert(false);
+    },5000)
    }
 
    const renderMobileMenu=()=>{
@@ -92,6 +99,9 @@ export default function Navbar(){
         </Toolbar>
         </Container>
         </AppBar>
+        {displayAlert?
+        <Alert variant="outlined" severity="success">{displayErr}</Alert>
+        :null}
         </div>
     );
 }

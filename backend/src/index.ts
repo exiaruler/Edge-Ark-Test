@@ -1,15 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import expressWs from 'express-ws';
-import teamSocket from './socket/teamSocket';
-const matchRoute=require('./route/fixture-route');
+import http from 'http';
+require('dotenv').config();
+import { WebSocketServer, WebSocket } from 'ws';
+import { WSMessage } from './response/wsReceivedMsg';
+const teamControl=require('./controller/teamController');
+const matchRoute=require('./route/fixtureRoute');
 const port = process.env.PORT || 8000;;
 const app = express()
-//const wsInstance=expressWs(app);
-expressWs(app);
-//const app = expressWs(express()).app;
-//const { app: wsApp, getWss } = wsInstance;
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
 
 function accessOrigin(origins:any){
     app.use(function(req,res,next){
@@ -30,17 +31,33 @@ const allowedOrigin=["http://localhost:3000"];
 accessOrigin(allowedOrigin);
 app.use(express.json());
 // monogoDB connection
-const mongoUrl="mongodb+srv://admin:123@cluster0.l6cgy.mongodb.net/edge-ark-test?retryWrites=true&w=majority&appName=Cluster0";
+const mongoUrl=process.env.MONGO_CONNECTION||'';
 mongoose.connect(mongoUrl).then(() => console.log('Connected to edge-ark-test'));
 
 function createRoute(route:string){
     return "/api/"+route;
 }
 app.use(createRoute('fixture'),matchRoute);
-const router = express.Router();
-//wsInstance.app.use('/ws',teamSocket);
-//app.use('/ws', teamSocket);
-app.listen(port,async() => {
+wss.on('connection', (ws: WebSocket) => {
+  ws.on('message', async (message: string) => {
+    const msgJson:WSMessage=JSON.parse(message);
+    var res=null;
+    switch(msgJson.route){
+      case '/team/search':
+        res=await teamControl.findTeamSearch(msgJson.value);
+        break;
+      default:
+    }
+    var msgBack=JSON.stringify(res);
+    ws.send(msgBack);
+  });
+
+  ws.on('close', () => {
+  
+  });
+});
+
+server.listen(port,async() => {
     console.log(`listening on port ${port}`)
     console.log("http://localhost:"+port+"/api");
   });

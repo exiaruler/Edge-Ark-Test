@@ -28,7 +28,6 @@ export default function Upload(){
         setFile(file);
         console.log(file);
         if(fileInputComp.current?.state.showError)setSavBtn(true);
-        //console.log(comp);
         
     }
     const errorClear=()=>{

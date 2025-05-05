@@ -1,10 +1,8 @@
-import { Date as mongoDate } from "mongoose";
-import { Response } from "../response/response-interface";
+import { Response } from "../response/responseInterface";
 const csv = require('csv-parser')
 const fs = require('fs');
 const fixture=require('../model/fixture');
-const teamControl=require('./team-controller');
-const jsonResponse=require('../response/response-output');
+const teamControl=require('./teamController');
 type fileKeys={
     fixture_mid:string,
     season:number,
@@ -15,7 +13,11 @@ type fileKeys={
     away_team:string
 }
 async function deleteAll(){
-    var response:Response=jsonResponse.newResponse();
+    var response:Response={
+        success: false,
+        statusCode: 200,
+        messageResponse: ""
+    };
     const deleteFixs=await fixture.deleteMany({});
     const deleteTeams=await teamControl.deleteAll();
     if(deleteFixs&&deleteTeams){
@@ -28,7 +30,11 @@ async function getAllFixtures(){
     return await fixture.find().populate('homeTeam').populate('awayTeam').exec();
 }
 async function upload(file:any){
-    var response:Response=jsonResponse.newResponse();
+    var response:Response={
+        success: false,
+        statusCode: 200,
+        messageResponse: ""
+    };
     var results:Array<fileKeys>=[];
     // extract contents of .csv
     const extract=new Promise<void>((resolve,reject)=>{
@@ -67,8 +73,6 @@ async function upload(file:any){
                 if(fix.fixture_mid!=""){
                     const existFix=await fixture.findOne({fixtureMid:fix.fixture_mid});
                     if(existFix==null){
-                        //const formatDt=formatDateTime(fix.fixture_datetime);
-                        
                         const newFix=new fixture({fixtureMid:fix.fixture_mid,season:fix.season,competitionName:fix.competition_name,
                                 fixtureDateTime:fix.fixture_datetime,fixtureRound:fix.fixture_round,homeTeam:exTeamHom,awayTeam:exTeamAwa});
                         const save=await fixture(newFix).save();
@@ -133,32 +137,6 @@ async function upload(file:any){
         }
       );
     return response;
-}
-// format date time to mongoDB Date format
-function formatDateTime(dateTime:Date){
-    var formatDt=new Date();
-    var dtSplit=dateTime.toString().split(" ");
-    var date=dtSplit[0];
-    var time=dtSplit[1];
-    var dateArr=date.split("-");
-    var timeArr=time.split(":");
-    if(timeArr.length==3&&dateArr.length==3){
-        /*
-        var month=dateArr[1];
-        if(month.indexOf('0')>-1){
-            month=month.charAt(1);
-        }
-        formatDt.setDate(parseInt(dateArr[2]));
-        formatDt.setMonth(parseInt(dateArr[1])+1);
-        formatDt.setFullYear(parseInt(dateArr[0]));
-        formatDt.setHours(parseInt(timeArr[0]));
-        formatDt.setMinutes(parseInt(timeArr[1]));
-        */
-       //dateTime.
-       
-    }
-    return formatDt;
-
 }
 
 module.exports={

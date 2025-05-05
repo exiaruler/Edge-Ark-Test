@@ -17,5 +17,8 @@
 .InputLabel{
   font-size: 19px;
 }
+.MuiInputLabel-root{
+  font-size: 19px;
+}
 
 

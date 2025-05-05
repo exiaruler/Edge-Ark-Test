@@ -15,8 +15,10 @@ type State={
     errorMsg:string;
     alertMsg:string;
     disableSave:boolean;
+    saveLoad:boolean;
 }
 export default class FormControl extends Component<Props,State>{
+    saveBtn=null;
     constructor(props:Props) {
         super(props);
         this.state = {
@@ -25,24 +27,27 @@ export default class FormControl extends Component<Props,State>{
             showAlert:false,
             successMsg:'',
             errorMsg:'',
-            alertMsg:''
+            alertMsg:'',
+            saveLoad:false
         };
     }
     submitHandle=(e: React.FormEvent)=>{
         e.preventDefault();
+        this.setState({...this.state,saveLoad:true});
         if(this.props.onSubmit){
             this.props.onSubmit();
         }
     }
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
         if(prevProps.success!=this.props.success){
-            this.setState({...this.state,alertVariant:'success',showAlert:true,alertMsg:this.props.success});
+            
+            this.setState({...this.state,alertVariant:'success',showAlert:true,alertMsg:this.props.success,saveLoad:false});
         }
         if(prevProps.error!=this.props.error){
-            this.setState({...this.state,alertVariant:'error',showAlert:true,alertMsg:this.props.error});
+            this.setState({...this.state,alertVariant:'error',showAlert:true,alertMsg:this.props.error,saveLoad:false});
         }
-        debugger;
         if(prevProps.disableSave!=this.props.disableSave&&typeof this.props.disableSave=='boolean'){
+            debugger;
             if(typeof this.props.disableSave=='boolean'){
                 this.setState({...this.state,disableSave:this.props.disableSave});
             }
@@ -60,19 +65,19 @@ export default class FormControl extends Component<Props,State>{
     render(){
         return(
             <div>
-            <Box sx={{width:1000}}>
+            <Box>
             <form onSubmit={this.submitHandle} encType='multipart/form-data'>
             {
                 this.props.children
             }
             <div className='Group'>
-            <Box sx={{width:400}}>
+            <Box sx={{width:'350px'}}>
             {this.state.showAlert?
             <Alert hidden={this.state.showAlert} variant='filled' severity={this.state.alertVariant}>{this.state.alertMsg}</Alert>
             :null}
             </Box>
             </div>
-            <Button type='submit' variant='contained' disabled={this.state.disableSave}>{this.props.saveCaption||'Save'}</Button>
+            <Button loading={this.state.saveLoad} type='submit' variant='contained' disabled={this.state.disableSave}>{this.props.saveCaption||'Save'}</Button>
             </form>
             </Box>
             </div>

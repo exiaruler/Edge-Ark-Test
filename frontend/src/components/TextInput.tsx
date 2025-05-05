@@ -18,7 +18,7 @@ export default class TextInput extends Component<Props>{
             <div className="Group">
             <FormControl variant="standard">
             <InputLabel className="InputLabel" shrink htmlFor="bootstrap-input">{this.props.label}</InputLabel>
-            <Input type='text' readOnly={this.props.readOnly} value={this.props.value}/>
+            <Input type='text' readOnly={this.props.readOnly} value={this.props.value} sx={{width:'100%'}}/>
             </FormControl>
             </div>
         );
